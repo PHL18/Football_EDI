@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barclays Term Sheet Validator - Anomalies Report</title>
+  <style>
+    :root {
+      --primary: #00395d;
+      --secondary: #00aeef;
+      --success: #9dd59f;
+      --warning: #ff9800;
+      --danger: #f44336;
+      --light-gray: #f5f5f5;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #757575;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f9f9f9;
+    }
+    
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    .logo img {
+      width: 140px;
+      margin-right: 10px;
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .main-content {
+      display: flex;
+      margin-top: 30px;
+      gap: 30px;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+    }
+    
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      color: var(--dark-gray);
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+    
+    .sidebar-links a:hover, .sidebar-links a.active {
+      background-color: var(--light-gray);
+      color: var(--primary);
+    }
+    
+    .content {
+      flex: 1;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+    }
+    
+    h1, h2, h3 {
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    
+    /* Metrics Section Styles */
+    .metrics-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .metric-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    
+    .metric-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .metric-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+    
+    .metric-title {
+      color: var(--dark-gray);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    
+    .metric-trend {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .metric-trend.positive {
+      color: var(--success);
+    }
+    
+    .metric-trend.negative {
+      color: var(--danger);
+    }
+    
+    .metric-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    
+    .icon-documents {
+      background-color: rgba(0, 57, 93, 0.1);
+      color: var(--primary);
+    }
+    
+    .icon-validated {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--success);
+    }
+    
+    .icon-anomalies {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: var(--danger);
+    }
+    
+    .icon-time {
+      background-color: rgba(0, 174, 239, 0.1);
+      color: var(--secondary);
+    }
+    
+    .icon-compliance {
+      background-color: rgba(255, 152, 0, 0.1);
+      color: var(--warning);
+    }
+    /* End Metrics Section Styles */
+    
+    /* Charts Section Styles */
+    .charts-section {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .chart-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      min-height: 300px;
+    }
+    
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    .chart-wrapper {
+      position: relative;
+      height: 250px;
+    }
+    
+    @media (max-width: 768px) {
+      .charts-section {
+        grid-template-columns: 1fr;
+      }
+    }
+    /* End Charts Section Styles */
+    
+    .upload-section {
+      border: 2px dashed var(--medium-gray);
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      background-color: var(--light-gray);
+      margin-bottom: 30px;
+      transition: border-color 0.3s;
+    }
+    
+    .upload-section:hover {
+      border-color: var(--secondary);
+    }
+    
+    .upload-section p {
+      margin: 10px 0 20px;
+      color: var(--dark-gray);
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #002b47;
+    }
+    
+    .btn-secondary {
+      background-color: var(--light-gray);
+      color: var(--dark-gray);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--medium-gray);
+    }
+    
+    .recent-uploads {
+      margin-top: 30px;
+    }
+    
+    .documents-list {
+      margin-top: 15px;
+    }
+    
+    .document-card {
+      border: 1px solid var(--medium-gray);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .document-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .document-icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--light-gray);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .document-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-uploaded {
+      background-color: var(--light-gray);
+      color: var(--dark-gray);
+    }
+    
+    .status-processing {
+      background-color: #fff8e1;
+      color: #ff8f00;
+    }
+    
+    .status-validated {
+      background-color: #e8f5e9;
+      color: var(--success);
+    }
+    
+    .status-error {
+      background-color: #ffebee;
+      color: var(--danger);
+    }
+    
+    .validation-progress {
+      width: 100%;
+      height: 10px;
+      margin-top: 20px;
+      background-color: var(--light-gray);
+      border-radius: 5px;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: var(--secondary);
+      transition: width 0.3s ease;
+    }
+    
+    .document-view {
+      display: none;
+      margin-top: 30px;
+    }
+    
+    .doc-comparison {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .doc-panel {
+      flex: 1;
+      border: 1px solid var(--medium-gray);
+      border-radius: 8px;
+      padding: 20px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .doc-panel h3 {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+    
+    .issue {
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    
+    .issue-critical {
+      background-color: rgba(244, 67, 54, 0.1);
+      border-left: 4px solid var(--danger);
+    }
+    
+    .issue-moderate {
+      background-color: rgba(255, 152, 0, 0.1);
+      border-left: 4px solid var(--warning);
+    }
+    
+    .issue-minor {
+      background-color: rgba(255, 235, 59, 0.1);
+      border-left: 4px solid #ffeb3b;
+    }
+    /* Profile Styles */
+.user-info {
+  position: relative;
+}
+
+.profile-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.profile-wrapper:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-wrapper:hover .profile-dropdown {
+  display: block;
+}
+
+.profile-image {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.username {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-email {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.dropdown-icon {
+  font-size: 10px;
+  margin-left: 5px;
+}
+
+.profile-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  z-index: 100;
+  margin-top: 10px;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 12px 15px;
+  color: var(--dark-gray);
+  text-decoration: none;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.profile-dropdown a:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.profile-dropdown a:last-child {
+  border-bottom: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.profile-dropdown a:hover {
+  background-color: var(--light-gray);
+  color: var(--primary);
+}
+
+.profile-dropdown a.logout {
+  color: var(--danger);
+}
+
+.profile-dropdown a.logout:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+    
+    .issue-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .issue-description {
+      color: var(--dark-gray);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    
+    .highlighted-text {
+      background-color: rgba(255, 152, 0, 0.2);
+      padding: 2px 4px;
+      border-radius: 2px;
+    }
+    
+    .simplified-text {
+      background-color: rgba(76, 175, 80, 0.1);
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+        
+      <nav>
+        
+        <div class="logo">
+            <span>Barclays Term Sheet Validator</span>
+          </div>
+      
+        <div class="nav-links">
+          
+          <a href="#">About</a>
+          <a href="#"  class="active">Settings</a>
+     
+        </div>
+        <div class="user-info">
+            <div class="profile-wrapper">
+              <img src="logo1.jpg" alt="Profile" class="profile-image">
+              <div class="profile-details">
+                <span class="username">Vertex</span>
+                <span class="user-email">vertex@gmail.com</span>
+              </div>
+              <div class="dropdown-icon">▼</div>
+              <div class="profile-dropdown">
+                <a href="#">My Profile</a>
+                <a href="#">Account Settings</a>
+                <a href="#">Help & Support</a>
+                <a href="#" class="logout">Logout</a>
+              </div>
+            </div>
+          </div>
+      </nav>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="main-content">
+      <aside class="sidebar">
+        <div class="sidebar-links">
+          <a href="#">
+            <span>Dashboard</span>
+          </a>
+          <a href="#">
+            <span>Validation History</span>
+          </a>
+          <a href="#" class="active">
+            <span>Anomalies Report</span>
+          </a>
+         
+       
+        </div>
+      </aside>
+      
+      <main class="content">
+        <h1>Anomalies Report</h1>
+        
+        <div class="filters">
+          <div class="filter-group">
+            <label>Date Range:</label>
+            <input type="date" value="2025-03-01">
+            <span>to</span>
+            <input type="date" value="2025-03-30">
+          </div>
+          
+          <div class="filter-group">
+            <label>Severity:</label>
+            <select>
+              <option>All Severities</option>
+              <option>Critical</option>
+              <option>Moderate</option>
+              <option>Minor</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Type:</label>
+            <select>
+              <option>All Types</option>
+              <option>Valuation Anomalies</option>
+              <option>Liquidation Preference</option>
+              <option>Missing Clauses</option>
+              <option>Interest Rate Issues</option>
+            </select>
+          </div>
+          
+          <button class="btn btn-primary">Apply Filters</button>
+        </div>
+        
+        <div class="stats-cards">
+          <div class="stat-card critical">
+            <h3>Critical Anomalies</h3>
+            <div class="value">12</div>
+          </div>
+          
+          <div class="stat-card moderate">
+            <h3>Moderate Anomalies</h3>
+            <div class="value">28</div>
+          </div>
+          
+          <div class="stat-card minor">
+            <h3>Minor Anomalies</h3>
+            <div class="value">45</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Documents Processed</h3>
+            <div class="value">87</div>
+          </div>
+        </div>
+        
+        <div class="anomalies-list">
+          <h2>Detected Anomalies</h2>
+          
+          <div class="anomaly-card">
+            <div class="anomaly-header">
+              <div class="anomaly-title">
+                <span>Excessive Liquidation Preference</span>
+              </div>
+              <div class="anomaly-info">
+                <span class="tag">CompanyX_TermSheet.pdf</span>
+                <span class="severity severity-critical">Critical</span>
+              </div>
+            </div>
+            <div class="anomaly-body">
+              <div class="anomaly-details">
+                <div class="detail-column">
+                  <div class="detail-group">
+                    <h4>Document</h4>
+                    <p>CompanyX_TermSheet.pdf</p>
+                  </div>
+                  <div class="detail-group">
+                    <h4>Detected On</h4>
+                    <p>March 30, 2025</p>
+                  </div>
+                </div>
+                <div class="detail-column">
+                  <div class="detail-group">
+                    <h4>Type</h4>
+                    <p>Liquidation Preference Anomaly</p>
+                  </div>
+                  <div class="detail-group">
+                    <h4>Status</h4>
+                    <p>Pending Review</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="anomaly-content">
+                <div class="issue-header">
+                  <h3>Issue Description</h3>
+                  <span class="dropdown-icon"></span>
+                </div>
+                <div class="issue-description">
+                  <p>The term sheet contains an unusually high liquidation preference multiple of 2x. Industry standard is typically 1x, especially for early-stage investments.</p>
+                  
+                  <div class="text-comparison">
+                    <div class="text-panel">
+                      <h4>Original Text</h4>
+                      <p>The Series A Preferred Stock shall receive <span class="highlighted-text">2x their original investment</span> before any proceeds are distributed to Common Stock holders. This liquidation preference shall be senior to all other equity securities of the Company.</p>
+                    </div>
+                    <div class="text-panel">
+                      <h4>Simplified Explanation</h4>
+                      <p>Investors will get twice their money back before founders/employees receive anything. This is higher than the industry standard of 1x (getting back exactly what they invested). This could significantly reduce founder returns in an exit scenario.</p>
+                    </div>
+                  </div>
+                </div>
+               <div class="comparison-section">
+    <h3>Comparison Results</h3>
+    <table style="width: 60%; border-collapse: collapse; text-align: center; font-family: Arial, sans-serif; border: 1px solid #ddd; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
+        <thead style="background-color: #00395D; color: white;">
+            <tr>
+                <th style="padding: 12px; border: 1px solid #ddd;">Field</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Excel Value</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Original Document Value</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: #f4f8fc;">
+                <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #00395D;">Liquidation Preference</td>
+                <td style="padding: 12px; border: 1px solid #ddd; color: #00796B; font-weight: bold;">1x</td>
+                <td style="padding: 12px; border: 1px solid #ddd; color: #D32F2F; font-weight: bold;">5x</td>
+                <td style="padding: 12px; border: 1px solid #ddd; color: white; background-color: #D32F2F; font-weight: bold; border-radius: 5px;">Mismatch</td>
+            </tr>
+        </tbody>
+    </table>
+            <!-- </tr>
+            <tr>
+                <td>Equity Stake (%)</td>
+                <td>20%</td>
+                <td>22%</td>
+                <td style="color: red;">Mismatch</td>
+            </tr>
+            <tr>
+                <td>Security Type</td>
+                <td>Preferred Stock</td>
+                <td>Common Stock</td>
+                <td style="color: red;">Mismatch</td>
+            </tr>
+            <tr>
+                <td>Board Seats</td>
+                <td>2 out of 5</td>
+                <td>3 out of 5</td>
+                <td style="color: red;">Mismatch</td>
+            </tr>
+            <tr>
+                <td>Voting Rights</td>
+                <td>Pro-rata based on equity</td>
+                <td>Equal voting rights</td>
+                <td style="color: red;">Mismatch</td>
+            </tr> -->
+        </tbody>
+    </table>
+</div>
+                
+                <div class="anomaly-actions">
+                  <button class="btn btn-secondary">Flag for Legal Review</button>
+                  <button class="btn btn-primary">Mark as Reviewed</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="anomaly-card">
+            <div class="anomaly-header">
+              <div class="anomaly-title">
+                <span>Excessive Interest Rate on Convertible Note</span>
+              </div>
+              <div class="anomaly-info">
+                <span class="tag">InvestmentY_Terms.xlsx</span>
+                <span class="severity severity-critical">Critical</span>
+              </div>
+            </div>
+            <div class="anomaly-body">
+              <div class="anomaly-details">
+                <div class="detail-column">
+                  <div class="detail-group">
+                    <h4>Document</h4>
+                    <p>InvestmentY_Terms.xlsx</p>
+                  </div>
+                  <div class="detail-group">
+                    <h4>Detected On</h4>
+                    <p>March 29, 2025</p>
+                  </div>
+                </div>
+                <div class="detail-column">
+                  <div class="detail-group">
+                    <h4>Type</h4>
+                    <p>Interest Rate Anomaly</p>
+                  </div>
+                  <div class="detail-group">
+                    <h4>Status</h4>
+                    <p>Pending Review</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="anomaly-content">
+                <div class="issue-header">
+                  <h3>Issue Description</h3>
+                  <span class="dropdown-icon"></span>
+                </div>
+                <div class="issue-description">
+                  <p>The convertible note includes an unusually high interest rate of 12% per annum. Market standard for similar stage companies is typically 5-8%.</p>
+                  
+                  <div class="text-comparison">
+                    <div class="text-panel">
+                      <h4>Original Text</h4>
+                      <p>The Convertible Note will accrue simple interest at the rate of <span class="highlighted-text">12% per annum</span> on the outstanding principal. Interest shall be computed based on a year of 365 days for the actual number of days elapsed.</p>
+                    </div>
+                    <div class="text-panel">
+                      <h4>Simplified Explanation</h4>
+                      <p>The interest rate on this convertible note is significantly above market rates for similar companies (12% vs. typical 5-8%). This means the company will be paying a premium price for this financing, potentially reducing available capital for operations and growth.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-comparison">
+                  <div class="text-panel">
+                    <h4>Original Document</h4>
+                    <p class="original-text">[Original document content goes here]</p>
+                  </div>
+                  <div class="text-panel">
+                    <h4>Detected Anomaly</h4>
+                    <p class="anomaly-text">[Detected anomaly content goes here]</p>
+                  </div>
+                </div>
+                
+                <div class="anomaly-actions">
+                  <button class="btn btn-secondary">Flag for Finance Review</button>
+                  <button class="btn btn-primary">Mark as Reviewed</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="anomaly-card">
+            <div class="anomaly-header">
+              <div class="anomaly-title">
+                <span>Pre-Money Valuation Discrepancy</span>
+              </div>
+              <div class="anomaly-info">
+                <span class="tag">Startup_Series_A.docx</span>
+                <span class="severity severity-moderate">Moderate</span>
+              </div>
+            </div>
+            <div class="anomaly-body">
+              <div class="anomaly-details">
+                <div class="detail-column">
+                  <div class="detail-group">
+                    <h4>Document</h4>
+                    <p>Startup_Series_A.docx</p>
+                  </div>
+                  <div class="detail-group">
+                    <h4>Detected On</h4>
+                    <p>March 28, 2025</p>
+                  </div>
+                </div>
+                <div class="detail-column">
+                  <div class="detail-group">
+                    <h4>Type</h4>
+                    <p>Pre-Money Valuation Anomaly</p>
+                  </div>
+                  <div class="detail-group">
+                    <h4>Status</h4>
+                    <p>Under Review</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="anomaly-content">
+                <div class="issue-header">
+                  <h3>Issue Description</h3>
+                  <span class="dropdown-icon"></span>
+                </div>
+                <div class="issue-description">
+                  <p>Inconsistency detected between the stated pre-money valuation and the post-money valuation given the investment amount.</p>
+                  
+                  <div class="text-comparison">
+                    <div class="text-panel">
+                      <h4>Original Text</h4>
+                      <p>The Pre-Money Valuation delineates the issuer’s appraised fair market worth antecedent to any capital infusion. A material inconsistency is present—wherein the contractual instrument stipulates a valuation of $18M, whereas the financial records in the Excel register indicate a valuation of $20M. This deviation has substantive ramifications on post-money valuation computations, equity apportionment, and investor dilution metrics. Given the potential for contractual misrepresentation and regulator.</p>
+                    </div>
+                    <div class="text-panel">
+                      <h4>Simplified Explanation</h4>
+                      <p> The Pre-Money Valuation reflects the company’s assessed worth pre-investment. A discrepancy exists—the document states $18M, while the Excel record list.</p>
+                    </div>
+                    <br>
+                  </div>
+                </div>
+                <p>&nbsp;</p> <!-- Adds space above the table -->
+
+                <table style="width: 60%; border-collapse: collapse; text-align: center; font-family: Arial, sans-serif; border: 1px solid #ddd; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
+                    <thead style="background-color: #00395D; color: white;">
+                        <tr>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Field</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Excel Value</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Original Document Value</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color: #f4f8fc;">
+                            <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #00395D;">Valuation</td>
+                            <td style="padding: 12px; border: 1px solid #ddd; color: #00796B; font-weight: bold;">$20,000,000</td>
+                            <td style="padding: 12px; border: 1px solid #ddd; color: #D32F2F; font-weight: bold;">$18,000,000</td>
+                            <td style="padding: 12px; border: 1px solid #ddd; color: white; background-color: #D32F2F; font-weight: bold; border-radius: 5px;">Mismatch</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="anomaly-actions">
+                  <button class="btn btn-secondary">Request Clarification</button>
+                  <button class="btn btn-primary">Mark as Reviewed</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="pagination">
+          <button>1</button>
+          <button class="active">2</button>
+          <button>3</button>
+          <button>4</button>
+          <button>5</button>
+          <button>→</button>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <script>
+    // Toggle anomaly card details when header is clicked
+    document.querySelectorAll('.anomaly-header').forEach(header => {
+      header.addEventListener('click', function() {
+        const body = this.nextElementSibling;
+        if (body.style.display === 'block') {
+          body.style.display = 'none';
+        } else {
+          // Hide all other anomaly bodies first
+          document.querySelectorAll('.anomaly-body').forEach(item => {
+            item.style.display = 'none';
+          });
+          body.style.display = 'block';
+        }
+      });
+    });
+    
+    // Toggle issue description when dropdown icon is clicked
+    document.querySelectorAll('.issue-header').forEach(header => {
+      header.addEventListener('click', function(e) {
+        const description = this.nextElementSibling;
+        const icon = this.querySelector('.dropdown-icon');
+        
+        if (description.style.display === 'block') {
+          description.style.display = 'none';
+          icon.classList.remove('active');
+        } else {
+          description.style.display = 'block';
+          icon.classList.add('active');
+        }
+        
+        // Prevent event from bubbling up to parent elements
+        e.stopPropagation();
+      });
+    });
+  </script>
+</body>
+</html>

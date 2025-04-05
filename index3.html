@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barclays Term Sheet Validator - Document Comparison</title>
+  <style>
+    :root {
+      --primary: #00395d;
+      --secondary: #00aeef;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+      --match: #4caf50;
+      --mismatch: #f44336;
+      --light-gray: #f5f5f5;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #757575;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f9f9f9;
+    }
+    
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .main-content {
+      display: flex;
+      margin-top: 30px;
+      gap: 30px;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+    }
+    
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      color: var(--dark-gray);
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+    
+    .sidebar-links a:hover, .sidebar-links a.active {
+      background-color: var(--light-gray);
+      color: var(--primary);
+    }
+    
+    .content {
+      flex: 1;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+    }
+    
+    h1, h2, h3 {
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #002b47;
+    }
+    
+    .btn-secondary {
+      background-color: var(--light-gray);
+      color: var(--dark-gray);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--medium-gray);
+    }
+    
+    /* Document section styles */
+    .document-section {
+      margin-bottom: 40px;
+    }
+    
+    .document-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .document-selector {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .document-source {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .source-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      background-color: var(--light-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    .client-info {
+      background-color: var(--light-gray);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .client-info h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .client-details {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .client-detail-group {
+      flex: 1;
+    }
+    
+    .client-detail-group h4 {
+      font-size: 14px;
+      color: var(--dark-gray);
+      margin-bottom: 5px;
+    }
+    
+    /* Fields comparison styles */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+      padding: 12px 15px;
+      border: 1px solid var(--medium-gray);
+      text-align: left;
+    }
+    
+    .comparison-table th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+    
+    .comparison-table tr:nth-child(even) {
+      background-color: var(--light-gray);
+    }
+    
+    .match {
+      background-color: rgba(76, 175, 80, 0.1) !important;
+      color: var(--match);
+      position: relative;
+    }
+    
+    .mismatch {
+      background-color: rgba(244, 67, 54, 0.1) !important;
+      color: var(--mismatch);
+      position: relative;
+    }
+    
+    .match::after,
+    .mismatch::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+    }
+    
+    .match::after {
+      background-color: var(--match);
+    }
+    
+    .mismatch::after {
+      background-color: var(--mismatch);
+    }
+    
+    .highlight-match {
+      background-color: rgba(76, 175, 80, 0.1);
+      padding: 2px 5px;
+      border-radius: 3px;
+      border-left: 3px solid var(--match);
+    }
+    
+    .highlight-mismatch {
+      background-color: rgba(244, 67, 54, 0.1);
+      padding: 2px 5px;
+      border-radius: 3px;
+      border-left: 3px solid var(--mismatch);
+    }
+    
+    /* Product selector tabs */
+    .product-tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 25px;
+      border-bottom: 1px solid var(--medium-gray);
+      padding-bottom: 10px;
+    }
+    
+    .product-tab {
+      padding: 10px 15px;
+      border-radius: 4px 4px 0 0;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .product-tab:hover {
+      background-color: var(--light-gray);
+    }
+    
+    .product-tab.active {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    /* Document preview */
+    .document-preview {
+      margin-top: 30px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .document-preview-header {
+      background-color: var(--light-gray);
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+    
+    .document-preview-content {
+      padding: 20px;
+      height: 300px;
+      overflow: auto;
+      background-color: white;
+    }
+    
+    /* Source indicators */
+    .source-label {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    
+    .source-email {
+      background-color: #e1bee7;
+      color: #6a1b9a;
+    }
+    
+    .source-excel {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+    
+    .source-pdf {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+    
+    .source-word {
+      background-color: #bbdefb;
+      color: #1565c0;
+    }
+    
+    .source-image {
+      background-color: #ffe0b2;
+      color: #ef6c00;
+    }
+    
+    .source-chat {
+      background-color: #d1c4e9;
+      color: #4527a0;
+    }
+    
+    /* Custom parameters section */
+    .custom-parameters {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: var(--light-gray);
+      border-radius: 8px;
+    }
+    
+    .custom-parameters h3 {
+      margin-bottom: 15px;
+    }
+    
+    .parameter-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .parameter-form input {
+      padding: 10px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 4px;
+      flex: 1;
+    }
+    
+    .parameters-list {
+      margin-top: 15px;
+    }
+    
+    .parameter-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 15px;
+      background-color: white;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    
+    .document-extraction {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .extraction-source {
+      text-align: center;
+      background-color: var(--light-gray);
+      padding: 15px;
+      border-radius: 8px;
+      width: 100px;
+      position: relative;
+    }
+    
+    .extraction-source.active::after {
+      content: "✓";
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background-color: var(--success);
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    .extraction-source i {
+      font-size: 24px;
+      margin-bottom: 8px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <!-- Barclays logo would go here -->
+          Barclays Term Sheet Validator
+        </div>
+        <div class="nav-links">
+          <a href="#">Dashboard</a>
+          <a href="#" class="active">Validation History</a>
+          <a href="#">Anomalaies Report</a>
+
+        </div>
+        <div class="user-info">
+          <span>Vertex</span>
+          
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="main-content">
+      <aside class="sidebar">
+        <div class="sidebar-links">
+          <a href="#">
+            <span>Dashboard</span>
+          </a>
+         
+          <a href="#" class="active">
+            <span>Validation History </span>
+          </a>
+         
+          <a href="#">
+            <span>Anomalies Reports</span>
+          </a>
+         
+        </div>
+      </aside>
+      
+      <main class="content">
+        <div class="document-header">
+          <h1>FX Option Term Sheet Validation</h1>
+          
+          <div class="document-selector">
+            <div class="document-source">
+              <span>Compare:</span>
+              <select>
+                <option>All Documents</option>
+                <option>Term Sheet vs. Email</option>
+                <option>Term Sheet vs. Excel</option>
+                <option>Excel vs. Email</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Added Validation History Section -->
+<div class="content">
+  <h2>Validation History</h2>
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Client Name</th>
+        <th>Document Type</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2025-04-01</td>
+        <td>Global Partners Ltd.</td>
+        <td>FX Options Term Sheet</td>
+        <td class="match">Validated</td>
+        <td><button class="btn btn-secondary">View</button></td>
+      </tr>
+      <tr>
+        <td>2025-03-30</td>
+        <td>Alpha Traders Inc.</td>
+        <td>Equity Derivatives Term Sheet</td>
+        <td class="mismatch">Mismatch Found</td>
+        <td><button class="btn btn-secondary">View</button></td>
+      </tr>
+      <tr>
+        <tr>
+          <td>2025-02-28</td>
+          <td>Summit Capital</td>
+          <td>Interest Rate Swap Term Sheet</td>
+          <td class="match">Validated</td>
+          <td><button class="btn btn-secondary">View</button></td>
+        </tr>
+        <tr>
+          <td>2025-01-25</td>
+          <td>Pinnacle Investments</td>
+          <td>Credit Default Swap Term Sheet</td>
+          <td class="mismatch">Mismatch Found</td>
+          <td><button class="btn btn-secondary">View</button></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+        <div class="product-tabs">
+          <div class="product-tab active">FX Options</div>
+     
+        </div>
+        
+        <div class="client-info">
+          <h3>Client Information</h3>
+          <div class="client-details">
+            <div class="client-detail-group">
+              <h4>Client Name</h4>
+              <p>Global Partners Ltd.</p>
+            </div>
+            <div class="client-detail-group">
+              <h4>Client ID</h4>
+              <p>GP-789045</p>
+            </div>
+            <div class="client-detail-group">
+              <h4>Relationship Manager</h4>
+              <p>Sarah Johnson</p>
+            </div>
+            <div class="client-detail-group">
+              <h4>Transaction ID</h4>
+              <p>FXO-2025041-8764</p>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+        <h2>Core Fields Comparison</h2>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              
+              <th>Extracted Data <span class="source-label source-excel">Data</span></th>
+              <th>Excel Data <span class="source-label source-email">Excel</span></th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Trade Date</strong></td>
+              
+              <td class="match">April 5, 2025</td>
+              <td class="match">April 5, 2025</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+            <tr>
+              <td><strong>Reference Spot Price</strong></td>
+              
+              <td class="mismatch">1.2340 USD/EUR</td>
+              <td class="mismatch">1.2345 USD/EUR</td>
+              <td><span class="highlight-mismatch">Mismatch</span></td>
+            </tr>
+            <tr>
+              <td><strong>Notional Amount</strong></td>
+            
+              <td class="match">10,000,000 EUR</td>
+              <td class="match">10,000,000 EUR</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+            <tr>
+              <td><strong>Strike Price</strong></td>
+              
+              <td class="mismatch">1.2500 USD/EUR</td>
+              <td class="mismatch">1.2550 USD/EUR</td>
+              <td><span class="highlight-mismatch">Mismatch</span></td>
+            </tr>
+            <tr>
+              <td><strong>Option Type</strong></td>
+             
+              <td class="match">Call</td>
+              <td class="match">Call</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+            <tr>
+              <td><strong>Expiry Date</strong></td>
+              
+              <td class="match">June 5, 2025</td>
+              <td class="match">June 5, 2025</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+            <tr>
+              <td><strong>Business Calendar</strong></td>
+              
+              <td class="match">New York, London</td>
+              <td class="match">New York, London</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+            <tr>
+              <td><strong>Delivery Date</strong></td>
+             
+              <td class="mismatch">June 8, 2025</td>
+              <td class="mismatch">June 7, 2025</td>
+              <td><span class="highlight-mismatch">Mismatch</span></td>
+            </tr>
+            <tr>
+              <td><strong>Premium Rate</strong></td>
+             
+              <td class="match">2.1%</td>
+              <td class="match">2.1%</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+            <tr>
+              <td><strong>Transaction Currency</strong></td>
+             
+              <td class="match">USD</td>
+              <td class="match">USD</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+            <tr>
+              <td><strong>Counter Currency</strong></td>
+              
+              <td class="match">EUR</td>
+              <td class="match">EUR</td>
+              <td><span class="highlight-match">Match</span></td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="custom-parameters">
+          <h3>Custom Parameters</h3>
+          <div class="parameter-form">
+            <input type="text" placeholder="Parameter Name">
+            <button class="btn btn-primary">Add Parameter</button>
+          </div>
+          
+          <div class="parameters-list">
+            <div class="parameter-item">
+              <span>Valuation Anomaly</span>
+              <div>
+                <button class="btn btn-secondary">Edit</button>
+                <button class="btn btn-secondary">Remove</button>
+              </div>
+            </div>
+            <div class="parameter-item">
+              <span>Signature Missing</span>
+              <div>
+                <button class="btn btn-secondary">Edit</button>
+                <button class="btn btn-secondary">Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <h2>Document Preview</h2>
+        <div class="document-preview">
+          <div class="document-preview-header">
+            <h3>Term Sheet (PDF)</h3>
+            <div>
+              <button class="btn btn-secondary">Previous</button>
+              <button class="btn btn-secondary">Next</button>
+            </div>
+          </div>
+          <div class="document-preview-content">
+            <p><strong>FX OPTION TERM SHEET</strong></p>
+            <p><strong>Transaction ID:</strong> FXO-2025041-8764</p>
+            <p><strong>Client:</strong> Global Partners Ltd.</p>
+            <br>
+            <p><strong>Trade Date:</strong> April 5, 2025</p>
+            <p><strong>Option Type:</strong> Call</p>
+            <p><strong>Buyer:</strong> Global Partners Ltd.</p>
+            <p><strong>Seller:</strong> Barclays Bank PLC</p>
+            <p><strong>Call Currency:</strong> USD</p>
+            <p><strong>Put Currency:</strong> EUR</p>
+            <p><strong>Call Currency Amount:</strong> USD 12,345,000</p>
+            <p><strong>Reference Spot Rate:</strong> 1.2345 USD/EUR</p>
+            <p><strong>Strike Price:</strong> 1.2550 USD/EUR</p>
+            <p><strong>Notional Amount:</strong> 10,000,000 EUR</p>
+            <p><strong>Premium:</strong> 2.1% of Notional Amount</p>
+            <p><strong>Premium Payment Date:</strong> April 8, 2025</p>
+            <p><strong>Expiry Date:</strong> June 5, 2025</p>
+            <p><strong>Expiry Time:</strong> 10:00 AM New York time</p>
+            <p><strong>Settlement Date:</strong> June 7, 2025</p>
+            <p><strong>Business Days:</strong> New York, London</p>
+          </div>
+        </div>
+        
+        <div class="anomaly-actions" style="margin-top: 30px; display: flex; justify-content: flex-end;">
+          <button class="btn btn-secondary">Export Report</button>
+          <button class="btn btn-primary">Resolve Mismatches</button>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <script>
+    // This would be where JavaScript functionality would go
+    // For handling document switching, parameter adding, etc.
+  </script>
+</body>
+</html>

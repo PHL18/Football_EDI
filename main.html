@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .navbar {
+            background: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .dashboard {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+        }
+        .menu {
+            width: 10%;
+            background: #444;
+            padding: 2px;
+            color: white;
+        }
+        .menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+            background: #555;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .menu a:hover {
+            background: #666;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <div class="menu">
+            <a href="#" onclick="loadPage('index.html')">Page 1</a>
+            <a href="#" onclick="loadPage('index2.html')">Page 2</a>
+            <a href="#" onclick="loadPage('index3.html')">Page 3</a>
+        </div>
+        <div class="content" id="content">
+            <h2>Welcome to the Dashboard</h2>
+            <p>Select a page from the menu to display its content.</p>
+        </div>
+    </div>
+
+    <script>
+        function loadPage(page) {
+            fetch(page)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('content').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading the page:', error));
+        }
+    </script>
+</body>
+</html>
